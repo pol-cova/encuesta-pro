@@ -6,8 +6,8 @@ git clone https://github.com/pol-cova/encuesta-pro.git
 cd encuesta-pro
 
 # 2. Copy environment file and edit
-cp env.example .env.prod
-# Edit .env.prod with your passwords
+cp env.example .env
+# Edit .env with your passwords
 
 # 3. Deploy everything (one command!)
 ./deploy.sh
@@ -68,8 +68,8 @@ cp env.example .env.prod
 ```bash
 git clone https://github.com/pol-cova/encuesta-pro.git
 cd encuesta-pro
-cp env.example .env.prod
-# Edit .env.prod with production values
+cp env.example .env
+# Edit .env with production values
 ./deploy.sh
 ```
 
