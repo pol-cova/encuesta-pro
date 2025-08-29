@@ -13,6 +13,13 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "service=frontend"
+        env: "NODE_ENV"
 
   backend:
     build:
@@ -35,6 +42,13 @@ services:
       - postgres
       - redis
     restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "service=backend"
+        env: "NODE_ENV"
 
   postgres:
     image: postgres:15-alpine
