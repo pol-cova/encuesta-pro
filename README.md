@@ -94,3 +94,5 @@ docker-compose -f docker-compose.prod.yaml logs grafana
 # View Loki logs
 docker-compose -f docker-compose.prod.yaml logs loki
 ```
+
+# Last update: 28/08/2025
