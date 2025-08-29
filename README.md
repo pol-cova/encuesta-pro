@@ -1,15 +1,15 @@
 # Encuesta Production
 
 ```bash
-# 1. Clone this repo
+# 1. Clone repo
 git clone https://github.com/pol-cova/encuesta-pro.git
 cd encuesta-pro
-
-# 2. Copy environment file and edit
-cp env.example .env
+# 2. Copy environment 
+cp .env.example .env
 # Edit .env with your passwords
-
-# 3. Deploy everything (one command!)
+# 3. Give permissions to the script
+chmod +x deploy.sh
+# 4. Deploy
 ./deploy.sh
 ```
 ## Commands
