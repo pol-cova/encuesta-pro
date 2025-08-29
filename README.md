@@ -96,4 +96,4 @@ docker-compose -f docker-compose.prod.yaml logs loki
 ```
 
 ### Last update: 28/08/2025
-### Last editor: Paul Conteras
+### Last editor: Paul Contreras
