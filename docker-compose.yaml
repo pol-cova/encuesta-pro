@@ -2,7 +2,9 @@ version: '3.8'
 
 services:
   frontend:
-    build: ./frontend
+    build:
+      context: .
+      dockerfile: dockerfiles/frontend.Dockerfile
     ports:
       - "3000:3000"
     environment:
@@ -11,27 +13,11 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
-    logging:
-      driver: "loki"
-      options:
-        loki-url: "http://loki:3100/loki/api/v1/push"
-        loki-pipeline-stages: |
-          - json:
-              expressions:
-                level: level
-                message: message
-                timestamp: timestamp
-                service: service
-        loki-relabel-config: |
-          - action: replace
-            replacement: frontend
-            target_label: service
-          - action: replace
-            replacement: production
-            target_label: environment
 
   backend:
-    build: ./backend
+    build:
+      context: .
+      dockerfile: dockerfiles/backend.Dockerfile
     ports:
       - "3001:3001"
     environment:
@@ -49,27 +35,6 @@ services:
       - postgres
       - redis
     restart: unless-stopped
-    logging:
-      driver: "loki"
-      options:
-        loki-url: "http://loki:3100/loki/api/v1/push"
-        loki-pipeline-stages: |
-          - json:
-              expressions:
-                level: level
-                message: message
-                timestamp: timestamp
-                service: service
-                method: method
-                url: url
-                statusCode: statusCode
-        loki-relabel-config: |
-          - action: replace
-            replacement: backend
-            target_label: service
-          - action: replace
-            replacement: production
-            target_label: environment
 
   postgres:
     image: postgres:15-alpine
@@ -82,17 +47,6 @@ services:
     ports:
       - "5432:5432"
     restart: unless-stopped
-    logging:
-      driver: "loki"
-      options:
-        loki-url: "http://loki:3100/loki/api/v1/push"
-        loki-relabel-config: |
-          - action: replace
-            replacement: postgres
-            target_label: service
-          - action: replace
-            replacement: production
-            target_label: environment
 
   redis:
     image: redis:7-alpine
@@ -102,17 +56,6 @@ services:
     ports:
       - "6379:6379"
     restart: unless-stopped
-    logging:
-      driver: "loki"
-      options:
-        loki-url: "http://loki:3100/loki/api/v1/push"
-        loki-relabel-config: |
-          - action: replace
-            replacement: redis
-            target_label: service
-          - action: replace
-            replacement: production
-            target_label: environment
 
   nginx:
     image: nginx:alpine
@@ -126,17 +69,6 @@ services:
       - frontend
       - backend
     restart: unless-stopped
-    logging:
-      driver: "loki"
-      options:
-        loki-url: "http://loki:3100/loki/api/v1/push"
-        loki-relabel-config: |
-          - action: replace
-            replacement: nginx
-            target_label: service
-          - action: replace
-            replacement: production
-            target_label: environment
 
   # Log aggregation with Loki
   loki:
@@ -164,6 +96,7 @@ services:
       - ./monitoring/promtail/promtail-config.yml:/etc/promtail/config.yml:ro
       - /var/log:/var/log:ro
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     restart: unless-stopped
     depends_on:
       - loki
@@ -175,17 +108,6 @@ services:
     volumes:
       - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     restart: unless-stopped
-    logging:
-      driver: "loki"
-      options:
-        loki-url: "http://loki:3100/loki/api/v1/push"
-        loki-relabel-config: |
-          - action: replace
-            replacement: prometheus
-            target_label: service
-          - action: replace
-            replacement: production
-            target_label: environment
 
   grafana:
     image: grafana/grafana:latest
@@ -200,17 +122,6 @@ services:
     restart: unless-stopped
     depends_on:
       - loki
-    logging:
-      driver: "loki"
-      options:
-        loki-url: "http://loki:3100/loki/api/v1/push"
-        loki-relabel-config: |
-          - action: replace
-            replacement: grafana
-            target_label: service
-          - action: replace
-            replacement: production
-            target_label: environment
 
 volumes:
   postgres_data:
