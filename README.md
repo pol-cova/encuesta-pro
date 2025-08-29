@@ -1,4 +1,4 @@
-# Encuesta Production Setup
+# Encuesta Production
 
 ```bash
 # 1. Clone this repo
@@ -12,36 +12,26 @@ cp env.example .env
 # 3. Deploy everything (one command!)
 ./deploy.sh
 ```
-
-## Management Commands
+## Commands
 
 ```bash
 # Start services
-./manage.sh start
+docker-compose up -d
 
 # Stop services
-./manage.sh stop
-
-# Restart services
-./manage.sh restart
+docker-compose down
 
 # View logs (all services)
-./manage.sh logs
+docker-compose logs
 
 # View logs for specific service
-./manage.sh logs backend
+docker-compose logs backend
 
 # Check status
-./manage.sh status
+docker-compose ps
 
-# Create backups
-./manage.sh backup
-
-# Clean everything
-./manage.sh clean
-
-# Show help
-./manage.sh help
+# Restart services
+docker-compose restart
 ```
 
 ## Services
@@ -55,45 +45,11 @@ cp env.example .env
 
 - Grafana: http://localhost:3002 (admin/admin)
 - Prometheus: http://localhost:9090
-- Loki: http://localhost:3100
-
-## Deployment
-
-### Local Development
-```bash
-./deploy.sh
-```
-
-### Production Server
-```bash
-git clone https://github.com/pol-cova/encuesta-pro.git
-cd encuesta-pro
-cp env.example .env
-# Edit .env with production values
-./deploy.sh
-```
+- Loki: http://localhost:3100 (logs)
+- Promtail: http://localhost:9080 (log shipping)
 
 ## Requirements
 
 - Docker and Docker Compose
 - Git
 - OpenSSL (for SSL certificates)
-
-## Monitoring commands
-
-```bash
-# Check monitoring services
-docker-compose -f docker-compose.prod.yaml ps prometheus grafana loki
-
-# View Prometheus logs
-docker-compose -f docker-compose.prod.yaml logs prometheus
-
-# View Grafana logs
-docker-compose -f docker-compose.prod.yaml logs grafana
-
-# View Loki logs
-docker-compose -f docker-compose.prod.yaml logs loki
-```
-
-### Last update: 28/08/2025
-### Last editor: Paul Contreras
