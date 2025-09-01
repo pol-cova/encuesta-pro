@@ -1,15 +1,22 @@
 server:
   http_listen_port: 9080
   grpc_listen_port: 0
+  log_level: info
 
 positions:
   filename: /tmp/positions.yaml
 
 clients:
   - url: http://loki:3100/loki/api/v1/push
+    backoff_config:
+      min_period: 500ms
+      max_period: 5m
+      max_retries: 10
+    batchwait: 1s
+    batchsize: 1048576
+    timeout: 10s
 
 scrape_configs:
-  # Docker container logs
   - job_name: docker
     docker_sd_configs:
       - host: unix:///var/run/docker.sock
@@ -27,6 +34,37 @@ scrape_configs:
         target_label: 'service'
         regex: '(.+)'
         replacement: '${1}'
+      - source_labels: ['__meta_docker_container_id']
+        target_label: 'container_id'
+    pipeline_stages:
+      - match:
+          selector: '{container!=""}'
+          stages:
+            - regex:
+                expression: '^(?P<timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})?)\s+(?P<log_level>\w+)?\s*(?P<message>.*)'
+            - timestamp:
+                source: timestamp
+                format: RFC3339
+                action_on_failure: fudge
+                fudge: 1s
+            - drop:
+                older_than: 720h  
+            - labels:
+                log_level: log_level
+            - output:
+                source: message
+      - match:
+          selector: '{container!=""}'
+          stages:
+            - timestamp:
+                source: time
+                format: RFC3339Nano
+                action_on_failure: fudge
+                fudge: 1s
+            - drop:
+                older_than: 720h  
+            - labels:
+                log_format: "docker_raw"
 
   # System logs
   - job_name: system
