@@ -35,6 +35,8 @@ check_port 9090 || exit 1
 check_port 3002 || exit 1
 check_port 3100 || exit 1
 check_port 9080 || exit 1
+check_port 9100 || exit 1
+check_port 8080 || exit 1
 
 echo ""
 echo "All ports are available! Ready to deploy."
@@ -50,12 +52,18 @@ echo "   - Grafana:  http://localhost:3002 (admin/admin)"
 echo "   - Prometheus: http://localhost:9090"
 echo "   - Loki:     http://localhost:3100 (logs)"
 echo "   - Promtail: http://localhost:9080 (log shipping)"
+echo "   - Node Exporter: http://localhost:9100 (system metrics)"
+echo "   - cAdvisor: http://localhost:8080 (container metrics)"
 echo ""
-echo "New Logging Features:"
+echo "New Monitoring Features:"
+echo "   • System resource monitoring (CPU, Memory, Disk)"
+echo "   • Container resource monitoring"
 echo "   • Centralized logs from all services"
 echo "   • Structured logging with JSON parsing"
 echo "   • Log correlation with metrics in Grafana"
+echo "   • 31-day log retention"
 echo "   • Error tracking and debugging"
+echo "   • Load testing capabilities"
 echo ""
 echo "To stop everything: docker-compose down"
 echo "To view logs: docker-compose logs"

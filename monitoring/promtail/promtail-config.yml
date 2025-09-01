@@ -45,16 +45,15 @@ scrape_configs:
         labels:
           job: app-logs
           __path__: /var/log/apps/*.log
-
-pipeline_stages:
-  - json:
-      expressions:
-        level: level
-        message: message
-        timestamp: timestamp
-        service: service
-        method: method
-        url: url
-        statusCode: statusCode
-        error: error
-        stack: stack
+    pipeline_stages:
+      - json:
+          expressions:
+            level: level
+            message: message
+            timestamp: timestamp
+            service: service
+            method: method
+            url: url
+            statusCode: statusCode
+            error: error
+            stack: stack
